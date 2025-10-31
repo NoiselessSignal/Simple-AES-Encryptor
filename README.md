@@ -13,7 +13,7 @@ Commands:
     $ sae enc [TARGET] <OPTIONS>
 
     dec : decrypts file/directory
-    $ sae enc [TARGET] <OPTIONS>
+    $ sae dec [TARGET] <OPTIONS>
 
     pwd : cache a password for this user
 
