@@ -3,8 +3,6 @@ Simple AES Encryptor (SAE) is a CLI program for easy file/directory encryption a
 
 ## Help page
 ```
-Simple AES Encryptor (SAE), v. 0.1.0
-
 SAE uses AES-256 for encryption and BLAKE3 for password hashing.
 
 Commands:
