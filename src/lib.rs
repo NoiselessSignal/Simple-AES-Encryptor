@@ -7,6 +7,8 @@ use serde::{Deserialize, Serialize};
 use serde_binary::binary_stream::Endian;
 use users::get_current_username;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 struct Set(bool);
 
 enum Mode {
@@ -218,11 +220,32 @@ pub fn run(cfg: Cfg) {
             let paths = paths();
 
             if !set.0 {
+                let mut uname = "".to_string();
+                if let Some(name) = get_current_username().unwrap().to_str() {uname.push_str(name);}
+                else {eprintln!("Error: Username is invalid."); exit(1)}
+
+                loop {
+                    let mut uinput = "".to_string();
+                    print!("This will clear cache for {uname}. Proceed? [y/n] ");
+                    if io::stdout().flush().is_err() {eprintln!("Error: Failed to clear I/O buffer."); exit(1)}
+                    if io::stdin().read_line(&mut uinput).is_err() {eprintln!("Error: Failed to read input."); exit(1)}
+
+                    match uinput.trim() {
+                        "y" => {break;}
+                        "n" => {
+                            if !cfg.quiet {println!("Aborted.")}
+                            exit(0)
+                        }
+                        _ => {continue;}
+                    }
+                }
+
                 if let Err(e) = fs::remove_file(&paths.hashpath) {
                     if e.kind() == ErrorKind::NotFound {eprintln!("Erorr: Cache is empty or doesn't exist."); exit(1)}
                     else {eprintln!("Error: Failed to clear cache."); exit(1)}
                 }
                 if !cfg.quiet {println!("Cache cleared.")}
+                
                 exit(0);
             }
 
@@ -581,7 +604,7 @@ fn decrypt(encdata: &[u8], hash: Hash) -> Result<Vec<u8>, String> {
 }
 
 fn print_help() {
-println!("Simple AES Encryptor (SAE), v. 0.1.0
+println!("Simple AES Encryptor (SAE), v. {VERSION}
 
 SAE uses AES-256 for encryption and BLAKE3 for password hashing.
 
@@ -591,7 +614,7 @@ Commands:
     $ sae enc [TARGET] <OPTIONS>
 
     dec : decrypts file/directory
-    $ sae enc [TARGET] <OPTIONS>
+    $ sae dec [TARGET] <OPTIONS>
     
     pwd : cache a password for this user
         
