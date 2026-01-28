@@ -136,7 +136,6 @@ pub fn lock_command(src: Src, dst: Option<Dst>, opts: Opts) -> Result<(), Genera
                     Some(s) => {s.to_os_string()}
                     None => {return Err(GeneralError::FileHasNoName(path));}
                 };
-                let hashname = hash(filename.as_bytes()).to_string(); drop(filename);
                 let mut enc_path_obj = encrypt_bytes(path.as_os_str().as_bytes().to_vec(), pwd_hash)?;
                 let file_bytes = match fs::read(&path) {
                     Ok(b) => {b}
@@ -149,9 +148,16 @@ pub fn lock_command(src: Src, dst: Option<Dst>, opts: Opts) -> Result<(), Genera
                 total.append(&mut enc_path_obj);
                 total.append(&mut enc_file_obj);
 
-                let output_path = &dst.0.join(&hashname);
-                if let Err(e) = fs::write(output_path, total) {
-                    return Err(GeneralError::FileWriteError(output_path.to_owned(), e.to_string()));
+                let output_path = {
+                    let mut hashname = hash(filename.as_bytes()).to_string();
+                    loop {
+                        let tmp = &dst.0.join(&hashname);
+                        if tmp.exists() { hashname = hash(hashname.as_bytes()).to_string(); }
+                        else {break tmp.to_owned();}
+                    }
+                };
+                if let Err(e) = fs::write(&output_path, total) {
+                    return Err(GeneralError::FileWriteError(output_path, e.to_string()));
                 }
             }
 
@@ -160,7 +166,6 @@ pub fn lock_command(src: Src, dst: Option<Dst>, opts: Opts) -> Result<(), Genera
                     Some(s) => {s.to_os_string()}
                     None => {return Err(GeneralError::FileHasNoName(path));}
                 };
-                let hashname = hash(filename.as_bytes()).to_string();
                 let path_bytes = path.as_os_str().as_bytes().to_vec();
                 let point_bytes = orig.as_os_str().as_bytes().to_vec();
                 let mut enc_path_obj = encrypt_bytes(path_bytes, pwd_hash)?;
@@ -171,9 +176,16 @@ pub fn lock_command(src: Src, dst: Option<Dst>, opts: Opts) -> Result<(), Genera
                 total.append(&mut enc_path_obj);
                 total.append(&mut enc_point_obj);
 
-                let output_path = &dst.0.join(&hashname);
-                if let Err(e) = fs::write(output_path, total) {
-                    return Err(GeneralError::FileWriteError(output_path.to_owned(), e.to_string()));
+                let output_path = {
+                    let mut hashname = hash(filename.as_bytes()).to_string();
+                    loop {
+                        let tmp = &dst.0.join(&hashname);
+                        if tmp.exists() { hashname = hash(hashname.as_bytes()).to_string(); }
+                        else {break tmp.to_owned();}
+                    }
+                };
+                if let Err(e) = fs::write(&output_path, total) {
+                    return Err(GeneralError::FileWriteError(output_path, e.to_string()));
                 }
             }
 
