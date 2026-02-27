@@ -14,7 +14,7 @@ use std::{
 };
 use blake3::hash;
 use jwalk::WalkDir;
-use crate::{args::args::*, crypto::crypto::*, pwd::pwd::*};
+use crate::{args::*, crypto::*, pwd::*};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 

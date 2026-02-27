@@ -1,5 +1,3 @@
-pub mod crypto {
-
 use aes_gcm::{AeadCore, Aes256Gcm, Key, KeyInit, aead::{Aead, OsRng}};
 use blake3::Hash;
 use crate::{lib::GeneralError};
@@ -63,6 +61,4 @@ pub fn decrypt_bytes(bytes: Vec<u8>, pwd_hash: Hash) -> Result<Vec<u8>, GeneralE
         Ok(b) => {return Ok(b);}
         Err(_) => {return Err(GeneralError::DecryptionError);}
     };
-}
-
 }

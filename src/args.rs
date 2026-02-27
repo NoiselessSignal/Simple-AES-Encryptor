@@ -1,5 +1,3 @@
-pub mod args {
-
 use std::{env::{args, current_dir}, ffi::{OsStr, OsString}, fs, io::Read, path::PathBuf};
 
 pub enum Cfg {
@@ -219,6 +217,4 @@ impl SrcAnalysisError {
             Self::NotFound => {"Target not found.".to_string()}
         }
     }
-}
-
 }

@@ -1,4 +1,4 @@
-use sae::{args::args::{Cfg, parse_args}, lib::{lock_command, open_command, print_help, save_command}};
+use sae::{args::{Cfg, parse_args}, lib::{lock_command, open_command, print_help, save_command}};
 
 fn main() -> Result<(), String> {
     let cfg = match parse_args() {

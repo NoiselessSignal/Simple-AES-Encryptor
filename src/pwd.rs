@@ -1,5 +1,3 @@
-pub mod pwd {
-
 use std::{fs, io, path::PathBuf, process::exit};
 use blake3::{Hash, hash};
 use users::get_current_username;
@@ -131,6 +129,4 @@ impl CacheAccessError {
             Self::InvalidLength => {"Cache data has invalid length.".to_string()}
         }
     }
-}
-
 }
